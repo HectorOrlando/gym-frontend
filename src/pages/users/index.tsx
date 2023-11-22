@@ -2,7 +2,8 @@
 
 import { Layout } from '@/components/layouts';
 
-export const UsersPage = () => {
+const UsersPage = () => {
+
     return (
         <Layout title="Users - Gym">
             <h1>Users Page</h1>
@@ -11,3 +12,4 @@ export const UsersPage = () => {
     );
 };
 
+export default UsersPage;
