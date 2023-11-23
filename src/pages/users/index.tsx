@@ -7,7 +7,7 @@ const UsersPage = () => {
 
     return (
         <Layout title="Users - Gym">
-            <h1>Users List</h1>
+            <div>Users List</div>
             {/* Agrega aquí el contenido de la página Users */}
             <UserList />
         </Layout>

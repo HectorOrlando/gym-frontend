@@ -5,7 +5,7 @@ import { Layout } from '@/components/layouts';
 const ExercisesPage = () => {
     return (
         <Layout title="Exercises - Gym">
-            <h1>ExercisesPage</h1>
+            <div>ExercisesPage</div>
             {/* Agrega aquí el contenido de la página Users */}
         </Layout>
     );

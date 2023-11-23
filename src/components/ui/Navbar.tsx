@@ -1,6 +1,8 @@
-// Navbar.tsc
+// Navbar.tsx
 
 import * as React from 'react';
+import Link from 'next/link';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -92,7 +94,9 @@ const Navbar = () => {
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                    <Link href={`/${page.toLowerCase()}`} passHref>
                                     <Typography textAlign="center">{page}</Typography>
+                                    </Link>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -119,22 +123,16 @@ const Navbar = () => {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                            <Button
-                                key={page}
-                                href={(page != 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-
+                            <Link key={page} href={(page !== 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`} passHref>
+                                <Typography textAlign="center">{page}</Typography>
+                            </Link>
                         ))}
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <AccountCircleIcon sx={{  color: 'white', fontSize: 50 }}/>
+                                <AccountCircleIcon sx={{ color: 'white', fontSize: 50 }} />
                             </IconButton>
                         </Tooltip>
                         <Menu
