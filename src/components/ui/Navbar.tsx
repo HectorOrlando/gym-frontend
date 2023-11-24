@@ -1,7 +1,7 @@
-// Navbar.tsx
+// src\components\ui\Navbar.tsx
 
 import * as React from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -21,6 +21,8 @@ const pages = ['Users', 'Exercises', 'ExercisesLog', 'Upaje'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Navbar = () => {
+    const router = useRouter();
+    
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -93,11 +95,23 @@ const Navbar = () => {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Link href={`/${page.toLowerCase()}`} passHref>
-                                    <Typography textAlign="center">{page}</Typography>
-                                    </Link>
-                                </MenuItem>
+                                <a key={page} href={(page !== 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <Typography
+                                        textAlign="center"
+                                        onClick={() => router.push(`/${page.toLowerCase()}`)}
+                                        sx={{
+                                            margin: 0,
+                                            padding: '12px',
+                                            color: 'black',
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                                textDecoration: 'underline',
+                                            },
+                                        }}
+                                    >
+                                        {page}
+                                    </Typography>
+                                </a>
                             ))}
                         </Menu>
 
@@ -123,9 +137,11 @@ const Navbar = () => {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                            <Link key={page} href={(page !== 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`} passHref>
-                                <Typography textAlign="center">{page}</Typography>
-                            </Link>
+                            <a key={page} href={(page !== 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`} style={{ textDecoration: 'none', color: 'inherit', marginRight: '16px' }}>
+                                <Typography textAlign="center" onClick={() => router.push(`/${page.toLowerCase()}`)}>
+                                    {page}
+                                </Typography>
+                            </a>
                         ))}
                     </Box>
 
