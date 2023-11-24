@@ -1,98 +1,12 @@
-## Tengo la siguiente estructura de directorios
+Tengo los siguientes archivos
 
-node_modules
-public
-src
-    components
-        layouts
-            index.ts
-            Layout.tsx
-        ui
-            index.ts
-            Navbar.tsx
-    
-    pages
-        api
-            hello.ts
-        _app.tsx
-        _document.tsx
-        index.tsx
-    
-    sytles
-        globals.css
-
-
-##  Dentro del directorio `pages` tengo: 
-
-// index.tsx
-
-import { Inter } from 'next/font/google'
-import { Layout } from '@/components/layouts'
-
-const inter = Inter({ subsets: ['latin'] })
-
-export default function HomePage() {
-  return (
-    <Layout title='Home - Gym'>
-
-    </Layout>
-  )
-}
-
-// _document.tsx
-
-import { Html, Head, Main, NextScript } from 'next/document'
-
-export default function Document() {
-  return (
-    <Html lang="en">
-      <Head />
-      <body>
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  )
-}
-
-// _app.tsx
-
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
-
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
-}
-
-// pages/api/hello.ts
-
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
-
-type Data = {
-  name: string
-}
-
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
-  res.status(200).json({ name: 'John Doe' })
-}
-
-
-## Dentro del directorio `components/layouts` tengo: 
-
-// index.ts
-export * from './Layout';
-
-// Layout.tsx
+// src\components\layouts\Layout.tsx
 
 import { FC, ReactNode } from 'react'
 import Head from 'next/head'
 
 import { Box } from '@mui/material'
-import { Navbar } from '../ui';
+import Navbar from '../ui/Navbar';
 
 
 interface Props {
@@ -114,16 +28,60 @@ export const Layout: FC<Props> = ({ title = 'Gym', children }) => {
     )
 }
 
+// src\components\types\User.ts
 
-## Dentro del directorio `components/ui` tengo: 
-// index.ts
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+}
 
-export * from './Navbar';
+export const userData: User[] = [
+    {
+        id: '1',
+        name: 'user 1',
+        email: 'email-1-@email.com'
+    },
+    {
+        id: '2',
+        name: 'user 2',
+        email: 'email-2-@email.com'
+    },
+    {
+        id: '3',
+        name: 'user 3',
+        email: 'email-3-@email.com'
+    }
+]
 
+export const createUser = (): User => {
+    const num = random();
+    return {
+        id: `${num}`,
+        name: `Producto ${num}`,
+        email: `email-${num}-@email.com`
+    }
+}
 
-// Navbar.tsc
+export function random() {
+    const min = 4;
+    const max = 1000;
+    return Math.floor((Math.random() * (max - min + 1)) + min);
+}
+
+// src\components\types\UserActions.ts
+
+import { User } from './User';
+
+export type UserAction =
+    | { type: 'ADD_USER'; payload: User }
+    | { type: 'REMOVE_USER'; payload: {id: string} }
+
+// src\components\ui\Navbar.tsx
 
 import * as React from 'react';
+import { useRouter } from 'next/router';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -142,6 +100,8 @@ const pages = ['Users', 'Exercises', 'ExercisesLog', 'Upaje'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Navbar = () => {
+    const router = useRouter();
+    
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -214,9 +174,23 @@ const Navbar = () => {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
+                                <a key={page} href={(page !== 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <Typography
+                                        textAlign="center"
+                                        onClick={() => router.push(`/${page.toLowerCase()}`)}
+                                        sx={{
+                                            margin: 0,
+                                            padding: '12px',
+                                            color: 'black',
+                                            cursor: 'pointer',
+                                            '&:hover': {
+                                                textDecoration: 'underline',
+                                            },
+                                        }}
+                                    >
+                                        {page}
+                                    </Typography>
+                                </a>
                             ))}
                         </Menu>
 
@@ -242,22 +216,18 @@ const Navbar = () => {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                            <Button
-                                key={page}
-                                href={(page != 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-
+                            <a key={page} href={(page !== 'Upaje') ? `/${page.toLowerCase()}` : `https://upaje.com/`} style={{ textDecoration: 'none', color: 'inherit', marginRight: '16px' }}>
+                                <Typography textAlign="center" onClick={() => router.push(`/${page.toLowerCase()}`)}>
+                                    {page}
+                                </Typography>
+                            </a>
                         ))}
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <AccountCircleIcon sx={{  color: 'white', fontSize: 50 }}/>
+                                <AccountCircleIcon sx={{ color: 'white', fontSize: 50 }} />
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -290,3 +260,258 @@ const Navbar = () => {
 }
 
 export default Navbar;
+
+// src\components\users\UserContext.tsx
+
+import { Dispatch, createContext } from 'react';
+import { User, UserAction } from '../types';
+
+interface UserContextProps {
+    users: User[];
+    dispatch: Dispatch<UserAction>;
+}
+
+
+export const UserContext = createContext({} as UserContextProps );
+
+// src\components\users\UserList.tsx
+
+import { useContext } from 'react';
+import { UserContext } from './UserContext';
+import { UserAction, createUser } from '../types';
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
+import { Button, ButtonGroup } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import EditIcon from '@mui/icons-material/Edit';
+
+const UserList: React.FC = () => {
+
+    const { users, dispatch } = useContext(UserContext)!;
+
+    const handleAddUser = () => {
+        const action: UserAction = {
+            type: 'ADD_USER',
+            payload: createUser()
+        }
+        dispatch(action);
+    }
+
+    const handleRemoveUser = (userId: string) => {
+        const action: UserAction = {
+            type: 'REMOVE_USER',
+            payload: { id: userId }
+        }
+        dispatch(action);
+    }
+
+    const handleUpdateUser = (userId: string) => {
+        console.log(`actualizar usuario nº :  ${userId}`);
+    }
+
+    return (
+        <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell align="left">ID</TableCell>
+                        <TableCell align="left">Name</TableCell>
+                        <TableCell align="left">Email</TableCell>
+                        <TableCell align="center">Action</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {
+                        users.map(({ id, name, email }) => (
+                            <TableRow key={id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row">{id}</TableCell>
+                                <TableCell align="left">{name}</TableCell>
+                                <TableCell align="left">{email}</TableCell>
+                                <TableCell align="center" sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <ButtonGroup variant="outlined" aria-label="outlined button group">
+                                        <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(id)}></Button>
+                                        <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(id)}></Button>
+                                        <Button variant="contained" startIcon={<AddCircleIcon />} onClick={() => handleAddUser()}></Button>
+                                    </ButtonGroup>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    }
+                </TableBody>
+            </Table>
+        </TableContainer>
+    )
+}
+
+export default UserList;
+
+
+// src\components\users\UserProvider.tsx
+
+import { FC, ReactNode, useReducer } from 'react';
+import { UserContext } from './UserContext';
+import { userReducer } from './UserReducer';
+import { userData } from '../types';
+
+interface UserProviderProps {
+    children: ReactNode;
+}
+
+
+export const UserProvider:FC<UserProviderProps> = ({ children }) => {
+
+    const [users, dispatch] = useReducer( userReducer , userData );
+
+    return (
+        <UserContext.Provider value={{ users, dispatch }}>
+            {children}
+        </UserContext.Provider>
+    )
+};
+
+// src\components\users\UserReducer.ts
+
+import { User, UserAction } from '../types';
+
+export const userReducer = (state: User[], action: UserAction): User[] => {
+   switch (action.type) {
+      case 'ADD_USER':
+         return [...state, action.payload];
+      case 'REMOVE_USER':
+         return state.filter(user => user.id !== action.payload.id);
+      // Puedes agregar más casos según tus necesidades
+      default:
+         return state;
+   }
+};
+
+
+// src\pages\api\gymApi.ts
+
+import axios from 'axios'
+
+export const gymApi = axios.create({
+    baseURL: 'https://gym-backend.upaje.com'
+})
+
+
+// pages/exercises.tsx
+
+import { Layout } from '@/components/layouts';
+
+const ExercisesPage = () => {
+    return (
+        <Layout title="Exercises - Gym">
+            <div>ExercisesPage</div>
+            {/* Agrega aquí el contenido de la página Users */}
+        </Layout>
+    );
+};
+
+export default ExercisesPage;
+
+// pages/exerciseslog.tsx
+
+import { Layout } from '@/components/layouts';
+
+const ExercisesLogPage = () => {
+    return (
+        <Layout title="Exercises Log - Gym">
+            <div>ExercisesLogPage</div>
+            {/* Agrega aquí el contenido de la página Users */}
+        </Layout>
+    );
+};
+
+export default ExercisesLogPage;
+
+// src\pages\home\index.tsx
+
+import React from 'react'
+
+const HomePage = () => {
+  return (
+      <div>Home Page</div>
+  )
+}
+
+export default HomePage;
+
+// pages/users.tsx
+
+import { Layout } from '@/components/layouts';
+import UserList from '@/components/users/UserList';
+
+const UsersPage = () => {
+
+    return (
+        <Layout title="Users - Gym">
+            <div>Users List</div>
+            {/* Agrega aquí el contenido de la página Users */}
+            <UserList />
+        </Layout>
+    );
+};
+
+export default UsersPage;
+
+// src\pages\_app.tsx
+
+import { UserProvider } from '@/components/users/UserProvider'
+import '@/styles/globals.css'
+import type { AppProps } from 'next/app'
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <UserProvider>
+      <Component {...pageProps} />
+    </UserProvider>
+  )
+}
+
+// src\pages\_document.tsx
+
+import { Html, Head, Main, NextScript } from 'next/document'
+
+export default function Document() {
+  return (
+    <Html lang="en">
+      <Head />
+      <body>
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  )
+}
+
+
+// src\pages\index.tsx
+
+import { Inter } from 'next/font/google'
+import { Layout } from '@/components/layouts'
+import  HomePage  from './home/index';
+
+const inter = Inter({ subsets: ['latin'] })
+
+export default function IndexPage() {
+  return (
+    <Layout title='Home - Gym'>
+      <HomePage/>
+    </Layout>
+  )
+}
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-// _document.tsx
+// src\pages\_document.tsx
 
 import { Html, Head, Main, NextScript } from 'next/document'
 

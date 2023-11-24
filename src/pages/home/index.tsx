@@ -1,3 +1,5 @@
+// src\pages\home\index.tsx
+
 import React from 'react'
 
 const HomePage = () => {

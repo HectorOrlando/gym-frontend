@@ -1,4 +1,4 @@
-// _app.tsx
+// src\pages\_app.tsx
 
 import { UserProvider } from '@/components/users/UserProvider'
 import '@/styles/globals.css'
