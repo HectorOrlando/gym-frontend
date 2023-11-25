@@ -2,6 +2,7 @@
 
 import { useContext } from 'react';
 import { UserContext } from './UserContext';
+import { User } from '@/interfaces/users-list';
 import { UserAction, createUser } from '../types';
 
 import Table from '@mui/material/Table';
@@ -17,9 +18,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 
-const UserList: React.FC = () => {
+const UserList: React.FC<{ users: User[] }> = ({ users: userList }) => {
 
-    const { users, dispatch } = useContext(UserContext)!;
+    const { dispatch } = useContext(UserContext)!;
 
     const handleAddUser = () => {
         const action: UserAction = {
@@ -54,15 +55,15 @@ const UserList: React.FC = () => {
                 </TableHead>
                 <TableBody>
                     {
-                        users.map(({ id, name, email }) => (
-                            <TableRow key={id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">{id}</TableCell>
+                        userList.map(({ _id, name, email }) => (
+                            <TableRow key={_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row">{_id}</TableCell>
                                 <TableCell align="left">{name}</TableCell>
                                 <TableCell align="left">{email}</TableCell>
                                 <TableCell align="center" sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <ButtonGroup variant="outlined" aria-label="outlined button group">
-                                        <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(id)}></Button>
-                                        <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(id)}></Button>
+                                        <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(_id)}></Button>
+                                        <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(_id)}></Button>
                                         <Button variant="contained" startIcon={<AddCircleIcon />} onClick={() => handleAddUser()}></Button>
                                     </ButtonGroup>
                                 </TableCell>
