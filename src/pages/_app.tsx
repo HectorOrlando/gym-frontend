@@ -1,14 +1,20 @@
 // src\pages\_app.tsx
 
-import { UserProvider } from '@/components/users/UserProvider'
-import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
+import { UserProvider } from '@/components/users/UserProvider'
+
+import { ThemeProvider } from '@mui/material/styles'
+import { CssBaseline } from '@mui/material'
+import { themeDark, themeLight } from '../themes'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <UserProvider>
-      <Component {...pageProps} />
-    </UserProvider>
+    <ThemeProvider theme={themeLight}>
+      <CssBaseline />
+      <UserProvider>
+        <Component {...pageProps} />
+      </UserProvider>
+    </ThemeProvider>
   )
 }
 

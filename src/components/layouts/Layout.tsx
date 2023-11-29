@@ -14,14 +14,19 @@ interface Props {
 
 export const Layout: FC<Props> = ({ title = 'Gym', children }) => {
     return (
-        <Box sx={{ flexFlow: 1 }}>
+        <Box>
             <Head>
-                <title>{title}</title>
+                <title>{title || 'Skeleton-Next'}</title>
+                <meta name='author' content='Hector Orlando' />
+                <meta name='description' content={`Informanción sobre la página ${title}`} />
+                <meta name='keywords' content={`${title}, Next.js, TypeScript, Node.js`} />
             </Head>
             <Navbar />
-            <Box sx={{ padding: '10px 20px' }}>
+            <main style={{
+                padding: '30px 20px 200px 20px'
+            }}>
                 {children}
-            </Box>
+            </main>
         </Box>
     )
 }
