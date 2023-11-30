@@ -1,6 +1,6 @@
-// pages/users.tsx
+// src\pages\users.tsx
 
-import { gymApi } from '../../api'
+import { gymApi } from '../api'
 import { Layout } from '@/components/layouts';
 import UserList from '@/components/users/UserList';
 import { User, UsersListResponse } from '@/interfaces/users-list';
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const UsersPage: NextPage<Props> = ({ users }) => {
-    
+
     return (
         <Layout title="Users - Gym">
             <div>Users List</div>
@@ -19,11 +19,11 @@ const UsersPage: NextPage<Props> = ({ users }) => {
     );
 };
 
-// You should use getStaticProps when:
-//- The data required to render the page is available at build time ahead of a user’s request.
-//- The data comes from a headless CMS.
-//- The data can be publicly cached (not user-specific).
-//- The page must be pre-rendered (for SEO) and be very fast — getStaticProps generates HTML and JSON files, both of which can be cached by a CDN for performance.
+// Deberías usar getStaticProps cuando:
+//- Los datos necesarios para representar la página están disponibles en el momento de la compilación, antes de la solicitud del usuario.
+//- Los datos provienen de un CMS sin cabeza.
+//- Los datos se pueden almacenar en caché públicamente (no específicos del usuario).
+//- La página debe estar renderizada previamente (para SEO) y ser muy rápida: getStaticProps genera archivos HTML y JSON, los cuales pueden almacenarse en caché mediante una CDN para mejorar el rendimiento.
 import { GetStaticProps, NextPage } from 'next'
 
 export const getStaticProps: GetStaticProps = async (ctx) => {

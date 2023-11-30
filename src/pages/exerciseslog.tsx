@@ -1,11 +1,11 @@
-// pages/exerciseslog.tsx
+// src\pages\exerciseslog.tsx
 
 import { Layout } from '@/components/layouts';
 
 const ExercisesLogPage = () => {
     return (
         <Layout title="Exercises Log - Gym">
-            <div>ExercisesLogPage</div>
+            <div>Exercises Log Page</div>
             {/* Agrega aquí el contenido de la página Users */}
         </Layout>
     );
