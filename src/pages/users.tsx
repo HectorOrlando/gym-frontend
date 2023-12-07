@@ -1,20 +1,19 @@
 // src\pages\users.tsx
 
-import { gymApi } from '../api'
+import { getUsers } from '../api'
 import { Layout } from '@/components/layouts';
 import UserList from '@/components/users/UserList';
-import { User, UsersListResponse } from '@/interfaces/users-list';
+// import UserList from '@/contexts/user/UserList';
+// import { UsersListResponse } from '@/types/user';
 
-interface Props {
-    users: User[]
-}
+// const UsersPage: NextPage<UsersListResponse> = ({ users }) => {
+const UsersPage = () => {
 
-const UsersPage: NextPage<Props> = ({ users }) => {
 
     return (
         <Layout title="Users - Gym">
             <div>Users List</div>
-            <UserList users={users} />
+            <UserList />
         </Layout>
     );
 };
@@ -24,15 +23,18 @@ const UsersPage: NextPage<Props> = ({ users }) => {
 //- Los datos provienen de un CMS sin cabeza.
 //- Los datos se pueden almacenar en caché públicamente (no específicos del usuario).
 //- La página debe estar renderizada previamente (para SEO) y ser muy rápida: getStaticProps genera archivos HTML y JSON, los cuales pueden almacenarse en caché mediante una CDN para mejorar el rendimiento.
+/*
 import { GetStaticProps, NextPage } from 'next'
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-    const { data } = await gymApi.get<UsersListResponse>('/gym/users');
+    const users = await getUsers();
+    
     return {
         props: {
-            users: data.users
+            users
         }
     }
 }
+*/
 
 export default UsersPage;

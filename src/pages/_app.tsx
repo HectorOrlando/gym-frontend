@@ -1,7 +1,7 @@
 // src\pages\_app.tsx
 
 import type { AppProps } from 'next/app'
-import { UserProvider } from '@/components/users/UserProvider'
+import { UserProvider } from '@/contexts/user/UserProvider'
 
 import { ThemeProvider } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'

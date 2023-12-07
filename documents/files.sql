@@ -1,5 +1,38 @@
 Tengo los siguientes archivos
 
+/**** api ***/
+// src\pages\api\gymApi.ts
+
+import axios from 'axios';
+import { User } from '@/types/user';
+
+export const gymApi = axios.create({
+    baseURL: 'https://gym-backend.upaje.com',
+});
+
+export const getUsers = async () => {
+    const response = await gymApi.get('/gym/users');
+    return response.data.users;
+};
+
+export const createUser = async (userData: User) => {
+    const response = await gymApi.post('/gym/user', userData);
+    return response.data;
+};
+
+export const updateUser = async (userId: string, userData: User) => {
+    const response = await gymApi.put(`/gym/user/${userId}`, userData);
+    return response.data;
+};
+
+export const deleteUser = async (userId: string) => {
+    const response = await gymApi.delete(`/gym/user/${userId}`);
+    return response.data;
+};
+
+
+/***** components  ****///
+
 // src\components\layouts\Layout.tsx
 
 import { FC, ReactNode } from 'react'
@@ -16,66 +49,23 @@ interface Props {
 
 export const Layout: FC<Props> = ({ title = 'Gym', children }) => {
     return (
-        <Box sx={{ flexFlow: 1 }}>
+        <Box>
             <Head>
-                <title>{title}</title>
+                <title>{title || 'Skeleton-Next'}</title>
+                <meta name='author' content='Hector Orlando' />
+                <meta name='description' content={`Informanción sobre la página ${title}`} />
+                <meta name='keywords' content={`${title}, Next.js, TypeScript, Node.js`} />
             </Head>
             <Navbar />
-            <Box sx={{ padding: '10px 20px' }}>
+            <main style={{
+                padding: '30px 20px 200px 20px'
+            }}>
                 {children}
-            </Box>
+            </main>
         </Box>
     )
 }
 
-// src\components\types\User.ts
-
-export interface User {
-    id: string;
-    name: string;
-    email: string;
-}
-
-export const userData: User[] = [
-    {
-        id: '1',
-        name: 'user 1',
-        email: 'email-1-@email.com'
-    },
-    {
-        id: '2',
-        name: 'user 2',
-        email: 'email-2-@email.com'
-    },
-    {
-        id: '3',
-        name: 'user 3',
-        email: 'email-3-@email.com'
-    }
-]
-
-export const createUser = (): User => {
-    const num = random();
-    return {
-        id: `${num}`,
-        name: `Producto ${num}`,
-        email: `email-${num}-@email.com`
-    }
-}
-
-export function random() {
-    const min = 4;
-    const max = 1000;
-    return Math.floor((Math.random() * (max - min + 1)) + min);
-}
-
-// src\components\types\UserActions.ts
-
-import { User } from './User';
-
-export type UserAction =
-    | { type: 'ADD_USER'; payload: User }
-    | { type: 'REMOVE_USER'; payload: {id: string} }
 
 // src\components\ui\Navbar.tsx
 
@@ -124,8 +114,10 @@ const Navbar = () => {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
 
+                    {/* Versión PC y Table  */}
+
+                    <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                     <Typography
                         variant="h6"
                         noWrap
@@ -195,6 +187,9 @@ const Navbar = () => {
                         </Menu>
 
                     </Box>
+
+                    {/* Versión Mobile  */}
+
                     <FitnessCenterIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
                         variant="h5"
@@ -261,24 +256,24 @@ const Navbar = () => {
 
 export default Navbar;
 
+
 // src\components\users\UserContext.tsx
 
+import { UserAction, UsersListResponse } from '@/types/user';
 import { Dispatch, createContext } from 'react';
-import { User, UserAction } from '../types';
 
-interface UserContextProps {
-    users: User[];
+type UserContextProps = {
+    users: UsersListResponse;
     dispatch: Dispatch<UserAction>;
 }
 
-
-export const UserContext = createContext({} as UserContextProps );
+export const UserContext = createContext({} as UserContextProps);
 
 // src\components\users\UserList.tsx
 
 import { useContext } from 'react';
 import { UserContext } from './UserContext';
-import { UserAction, createUser } from '../types';
+import { User, UserAction } from '@/types/user';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -293,19 +288,21 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 
-const UserList: React.FC = () => {
+const UserList: React.FC<{ users: User[] }> = ({ users: userList }) => {
 
-    const { users, dispatch } = useContext(UserContext)!;
+    const { dispatch } = useContext(UserContext)!;
+    
 
-    const handleAddUser = () => {
-        const action: UserAction = {
-            type: 'ADD_USER',
-            payload: createUser()
-        }
-        dispatch(action);
-    }
+    // const handleAddUser = () => {
+    //     const action: UserAction = {
+    //         type: 'ADD_USER',
+    //         payload: createUser()
+    //     }
+    //     dispatch(action);
+    // }
 
     const handleRemoveUser = (userId: string) => {
+
         const action: UserAction = {
             type: 'REMOVE_USER',
             payload: { id: userId }
@@ -313,9 +310,9 @@ const UserList: React.FC = () => {
         dispatch(action);
     }
 
-    const handleUpdateUser = (userId: string) => {
-        console.log(`actualizar usuario nº :  ${userId}`);
-    }
+    // const handleUpdateUser = (userId: string) => {
+    //     console.log(`actualizar usuario nº :  ${userId}`);
+    // }
 
     return (
         <TableContainer component={Paper}>
@@ -330,16 +327,16 @@ const UserList: React.FC = () => {
                 </TableHead>
                 <TableBody>
                     {
-                        users.map(({ id, name, email }) => (
-                            <TableRow key={id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">{id}</TableCell>
+                        userList.map(({ _id, name, email }) => (
+                            <TableRow key={_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row">{_id}</TableCell>
                                 <TableCell align="left">{name}</TableCell>
                                 <TableCell align="left">{email}</TableCell>
                                 <TableCell align="center" sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <ButtonGroup variant="outlined" aria-label="outlined button group">
-                                        <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(id)}></Button>
-                                        <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(id)}></Button>
-                                        <Button variant="contained" startIcon={<AddCircleIcon />} onClick={() => handleAddUser()}></Button>
+                                        <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(_id)}></Button>
+                                        {/* <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(_id)}></Button>
+                                        <Button variant="contained" startIcon={<AddCircleIcon />} onClick={() => handleAddUser()}></Button> */}
                                     </ButtonGroup>
                                 </TableCell>
                             </TableRow>
@@ -353,22 +350,20 @@ const UserList: React.FC = () => {
 
 export default UserList;
 
-
 // src\components\users\UserProvider.tsx
 
 import { FC, ReactNode, useReducer } from 'react';
 import { UserContext } from './UserContext';
 import { userReducer } from './UserReducer';
-import { userData } from '../types';
+import { UsersListResponse, UserAction } from '../../types';
 
 interface UserProviderProps {
     children: ReactNode;
 }
 
-
 export const UserProvider:FC<UserProviderProps> = ({ children }) => {
 
-    const [users, dispatch] = useReducer( userReducer , userData );
+    const [users, dispatch] = useReducer( UsersListResponse , UserAction );
 
     return (
         <UserContext.Provider value={{ users, dispatch }}>
@@ -379,14 +374,14 @@ export const UserProvider:FC<UserProviderProps> = ({ children }) => {
 
 // src\components\users\UserReducer.ts
 
-import { User, UserAction } from '../types';
+import { UsersListResponse, UserAction } from "@/types/user";
 
-export const userReducer = (state: User[], action: UserAction): User[] => {
+export const userReducer = (state: UsersListResponse, action: UserAction): UsersListResponse => {
    switch (action.type) {
       case 'ADD_USER':
-         return [...state, action.payload];
+         return { users: [...state.users, action.payload] };
       case 'REMOVE_USER':
-         return state.filter(user => user.id !== action.payload.id);
+         return { users: state.users.filter(user => user._id !== action.payload.id) };
       // Puedes agregar más casos según tus necesidades
       default:
          return state;
@@ -394,100 +389,25 @@ export const userReducer = (state: User[], action: UserAction): User[] => {
 };
 
 
-// pages/exercises.tsx
-
-import { Layout } from '@/components/layouts';
-
-const ExercisesPage = () => {
-    return (
-        <Layout title="Exercises - Gym">
-            <div>ExercisesPage</div>
-            {/* Agrega aquí el contenido de la página Users */}
-        </Layout>
-    );
-};
-
-export default ExercisesPage;
-
-// pages/exerciseslog.tsx
-
-import { Layout } from '@/components/layouts';
-
-const ExercisesLogPage = () => {
-    return (
-        <Layout title="Exercises Log - Gym">
-            <div>ExercisesLogPage</div>
-            {/* Agrega aquí el contenido de la página Users */}
-        </Layout>
-    );
-};
-
-export default ExercisesLogPage;
-
-// src\pages\home\index.tsx
-
-import React from 'react'
-
-const HomePage = () => {
-  return (
-      <div>Home Page</div>
-  )
-}
-
-export default HomePage;
-
-
-// pages/users.tsx
-
-import { gymApi } from '../../api'
-import { Layout } from '@/components/layouts';
-import UserList from '@/components/users/UserList';
-import { User, UsersListResponse } from '@/interfaces/users-list';
-
-interface Props {
-    users: User[]
-}
-
-const UsersPage: NextPage<Props> = ({ users }) => {
-    
-    return (
-        <Layout title="Users - Gym">
-            <div>Users List</div>
-            <UserList users={users} />
-        </Layout>
-    );
-};
-
-// You should use getStaticProps when:
-//- The data required to render the page is available at build time ahead of a user’s request.
-//- The data comes from a headless CMS.
-//- The data can be publicly cached (not user-specific).
-//- The page must be pre-rendered (for SEO) and be very fast — getStaticProps generates HTML and JSON files, both of which can be cached by a CDN for performance.
-import { GetStaticProps, NextPage } from 'next'
-
-export const getStaticProps: GetStaticProps = async (ctx) => {
-    const { data } = await gymApi.get<UsersListResponse>('/gym/users');
-    return {
-        props: {
-            users: data.users
-        }
-    }
-}
-
-export default UsersPage;
-
+/*********   pages   *****/
 
 // src\pages\_app.tsx
 
-import { UserProvider } from '@/components/users/UserProvider'
-import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
+import { UserProvider } from '@/components/users/UserProvider'
+
+import { ThemeProvider } from '@mui/material/styles'
+import { CssBaseline } from '@mui/material'
+import { themeDark, themeLight } from '../themes'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <UserProvider>
-      <Component {...pageProps} />
-    </UserProvider>
+    <ThemeProvider theme={themeLight}>
+      <CssBaseline />
+      <UserProvider>
+        <Component {...pageProps} />
+      </UserProvider>
+    </ThemeProvider>
   )
 }
 
@@ -507,48 +427,141 @@ export default function Document() {
   )
 }
 
+// src\pages\exercises.tsx
+
+import { Layout } from '@/components/layouts';
+
+const ExercisesPage = () => {
+    return (
+        <Layout title="Exercises - Gym">
+            <div>Exercises Page</div>
+            {/* Agrega aquí el contenido de la página Users */}
+        </Layout>
+    );
+};
+
+export default ExercisesPage;
+
+
+// src\pages\exerciseslog.tsx
+
+import { Layout } from '@/components/layouts';
+
+const ExercisesLogPage = () => {
+    return (
+        <Layout title="Exercises Log - Gym">
+            <div>Exercises Log Page</div>
+            {/* Agrega aquí el contenido de la página Users */}
+        </Layout>
+    );
+};
+
+export default ExercisesLogPage;
+
 
 // src\pages\index.tsx
 
-import { Inter } from 'next/font/google'
 import { Layout } from '@/components/layouts'
-import  HomePage  from './home/index';
-
-const inter = Inter({ subsets: ['latin'] })
 
 export default function IndexPage() {
   return (
     <Layout title='Home - Gym'>
-      <HomePage/>
+      <div>Home Page</div>
     </Layout>
   )
 }
 
-// src\pages\api\gymApi.ts
 
-import axios from 'axios';
+// src\pages\users.tsx
 
-const gymApi = axios.create({
-    baseURL: 'https://gym-backend.upaje.com',
+import { getUsers } from '../api'
+import { Layout } from '@/components/layouts';
+import UserList from '@/components/users/UserList';
+import { UsersListResponse } from '@/types/user';
+
+const UsersPage: NextPage<UsersListResponse> = ({ users }) => {
+
+    return (
+        <Layout title="Users - Gym">
+            <div>Users List</div>
+            <UserList users={users} />
+        </Layout>
+    );
+};
+
+// Deberías usar getStaticProps cuando:
+//- Los datos necesarios para representar la página están disponibles en el momento de la compilación, antes de la solicitud del usuario.
+//- Los datos provienen de un CMS sin cabeza.
+//- Los datos se pueden almacenar en caché públicamente (no específicos del usuario).
+//- La página debe estar renderizada previamente (para SEO) y ser muy rápida: getStaticProps genera archivos HTML y JSON, los cuales pueden almacenarse en caché mediante una CDN para mejorar el rendimiento.
+import { GetStaticProps, NextPage } from 'next'
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+    const users = await getUsers();
+    
+    return {
+        props: {
+            users
+        }
+    }
+}
+
+export default UsersPage;
+
+
+/*****  themes  ********/
+// src\themes\theme-dark.ts
+
+import { createTheme } from '@mui/material/styles';
+
+export const themeDark = createTheme({
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#3f51b5',
+        },
+        secondary: {
+            main: '#f50057',
+        },
+    },
 });
 
-export default gymApi;
+
+// src\themes\theme-light.ts
+
+import { createTheme } from '@mui/material/styles';
+
+export const themeLight = createTheme({
+    palette: {
+        mode: 'light',
+        primary: {
+            main: '#3f51b5',
+        },
+        secondary: {
+            main: '#f50057',
+        },
+    },
+});
 
 
-// src\interfaces\users-list.ts
 
-export interface UsersListResponse {
+/***  types   *******/
+
+// src\types\user.ts
+
+export type UsersListResponse = {
     users: User[];
 }
 
-export interface User {
+export type User = {
     _id:   string;
     name:  string;
     email: string;
 }
 
-
-
-
+export type UserAction =
+    | { type: 'ADD_USER'; payload: User }
+    | { type: 'REMOVE_USER'; payload: {id: string} }
+    | { type: 'SET_USERS'; payload: User[] }
 
 

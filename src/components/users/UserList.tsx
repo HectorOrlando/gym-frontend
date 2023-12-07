@@ -1,9 +1,10 @@
 // src\components\users\UserList.tsx
 
 import { useContext } from 'react';
-import { UserContext } from './UserContext';
-import { User } from '@/interfaces/users-list';
-import { UserAction, createUser } from '../types';
+// import { UserContext } from './UserContext';
+import { User, UserAction } from '@/interfaces/user';
+// import { UserAction, createUser } from '../types';
+import { useUserContext } from '@/contexts/user/UserContext';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,25 +18,19 @@ import { Button, ButtonGroup } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
+import { getUsers } from '@/api';
 
-const UserList: React.FC<{ users: User[] }> = ({ users: userList }) => {
 
-    const { dispatch } = useContext(UserContext)!;
 
+const UserList: React.FC = () => {
+    const { users, deleteUserById, addUser } = useUserContext(); // Utilizamos el hook para acceder al contexto
+    console.log(users);
     const handleAddUser = () => {
-        const action: UserAction = {
-            type: 'ADD_USER',
-            payload: createUser()
-        }
-        dispatch(action);
+        addUser();
     }
 
-    const handleRemoveUser = (userId: string) => {
-        const action: UserAction = {
-            type: 'REMOVE_USER',
-            payload: { id: userId }
-        }
-        dispatch(action);
+    const handleRemoveUser = (_id: string) => {
+        deleteUserById(_id);
     }
 
     const handleUpdateUser = (userId: string) => {
@@ -54,22 +49,20 @@ const UserList: React.FC<{ users: User[] }> = ({ users: userList }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {
-                        userList.map(({ _id, name, email }) => (
-                            <TableRow key={_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">{_id}</TableCell>
-                                <TableCell align="left">{name}</TableCell>
-                                <TableCell align="left">{email}</TableCell>
-                                <TableCell align="center" sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <ButtonGroup variant="outlined" aria-label="outlined button group">
-                                        <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(_id)}></Button>
-                                        <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(_id)}></Button>
-                                        <Button variant="contained" startIcon={<AddCircleIcon />} onClick={() => handleAddUser()}></Button>
-                                    </ButtonGroup>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    }
+                    {Array.isArray(users) && users.map(({ _id, name, email }) => (
+                        <TableRow key={_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                            <TableCell component="th" scope="row">{_id}</TableCell>
+                            <TableCell align="left">{name}</TableCell>
+                            <TableCell align="left">{email}</TableCell>
+                            <TableCell align="center" sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <ButtonGroup variant="outlined" aria-label="outlined button group">
+                                    <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(_id)}></Button>
+                                    <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(_id)}></Button>
+                                    <Button variant="contained" startIcon={<AddCircleIcon />} onClick={() => handleAddUser()}></Button>
+                                </ButtonGroup>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>

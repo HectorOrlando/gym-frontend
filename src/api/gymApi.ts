@@ -1,14 +1,17 @@
 // src\pages\api\gymApi.ts
 
 import axios from 'axios';
-import { User } from '@/interfaces/users-list';
+import { User, UsersListResponse } from '@/interfaces/user';
+
 
 export const gymApi = axios.create({
-    baseURL: 'https://gym-backend.upaje.com',
+    // baseURL: 'https://gym-backend.upaje.com',
+    baseURL: 'http://localhost:3008',
+    
 });
 
 export const getUsers = async () => {
-    const response = await gymApi.get('/gym/users');
+    const response = await gymApi.get<UsersListResponse>('/gym/users');
     return response.data.users;
 };
 
