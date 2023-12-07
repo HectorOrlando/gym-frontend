@@ -1,4 +1,4 @@
-// src\components\users\UserList.tsx
+// src\components\backoffice\users\UserList.tsx
 
 import { useUserContext } from '@/contexts/user/UserContext';
 

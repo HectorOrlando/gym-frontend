@@ -17,7 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const pages = ['Users', 'Exercises', 'ExercisesLog', 'Upaje'];
+const pages = ['backoffice/users', 'Exercises', 'ExercisesLog', 'Upaje'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Navbar = () => {

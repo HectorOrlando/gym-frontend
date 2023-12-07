@@ -1,12 +1,8 @@
-// src\pages\users.tsx
+// src\pages\backoffice\users.tsx
 
-import { getUsers } from '../api'
 import { Layout } from '@/components/layouts';
-import UserList from '@/components/users/UserList';
-// import UserList from '@/contexts/user/UserList';
-// import { UsersListResponse } from '@/types/user';
+import UserList from '@/components/backoffice/users/UserList';
 
-// const UsersPage: NextPage<UsersListResponse> = ({ users }) => {
 const UsersPage = () => {
 
 
