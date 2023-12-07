@@ -1,59 +1,62 @@
 // src\contexts\user\UserProvider.tsx
 
-import { FC, PropsWithChildren, useEffect, useReducer } from 'react';
-import { userReducer } from './userReducer';
+import { FC, PropsWithChildren, useEffect, useState } from 'react';
 import { UserContext } from './UserContext';
-import { getUsers } from '@/api';
-import { ContextProps, User, UsersListResponse } from '../../interfaces/user'
-import axios from 'axios';
+import { ContextProps, User, UsersListResponse } from '../../interfaces/user';
+import { gymApi } from '@/api';
 
-export const gymApi = axios.create({
-    // baseURL: 'https://gym-backend.upaje.com',
-    baseURL: 'http://localhost:3008',
-    
-});
-// src/contexts/user/UserProvider.tsx
-
-// ...
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
-    const [state, dispatch] = useReducer(userReducer, { users: [] as User[] });
+    const [state, setState] = useState<ContextProps>({
+        users: [],
+        deleteUserById: () => { throw new Error('deleteUserById called before getUsers') },
+        createUser: () => { throw new Error('createUser called before getUsers') },
+        updateUser: () => { throw new Error('updateUser called before getUsers') }
+    });
 
-    const deleteUserById = (id: string) => {
-        dispatch({ type: 'REMOVE_USER', payload: { _id: id } });
-    };
-
-    const addUser = () => {
-        const randomInt = (min: number, max: number) => {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        };
-
-        const numRandom = randomInt(10, 100).toString();
-        const userNew = { _id: numRandom, name: `name ${numRandom}`, email: `email-${numRandom}-@email.com` };
-
-        dispatch({ type: 'ADD_USER', payload: userNew });
+    const getUsers = async () => {
+        try {
+            const { data } = await gymApi.get<UsersListResponse>('/gym/users');
+            setState({ users: data.users, deleteUserById, createUser, updateUser });
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { data } = await gymApi.get<UsersListResponse>('/gym/users');
-                dispatch({ type: 'SET_USERS', payload: data });
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-
-        fetchData();
+        getUsers();
     }, []);
 
-    const contextValue: ContextProps = {
-        users: state.users,
-        deleteUserById,
-        addUser
+    const deleteUserById = async (_id: string) => {
+        try {
+            await gymApi.delete(`/gym/user/${_id}`);
+            getUsers(); // Actualizar la lista de usuarios después de eliminar
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
     };
 
+    const createUser = async (userData: User) => {
+        
+        try {
+            await gymApi.post('/gym/user', userData);
+            getUsers();
+        } catch (error) {
+            console.error('Error create user:', error);
+        }
+    }
+
+    const updateUser =async (_id: string, userData: User) => {
+
+        try {
+            await gymApi.put(`/gym/user/${_id}`, userData);
+            getUsers();
+        } catch (error) {
+            console.error('Error update user:', error);
+        }
+    }
+
     return (
-        <UserContext.Provider value={contextValue}>
+        <UserContext.Provider value={state}>
             {children}
         </UserContext.Provider>
     );

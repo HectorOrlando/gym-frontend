@@ -1,26 +1,21 @@
 // src/interfaces/user.ts
-
-// Definición del tipo de usuario
-export interface User {
-    _id: string;
-    name: string;
-    email: string;
-}
+// https://app.quicktype.io/
 
 export interface UsersListResponse {
     users: User[];
 }
 
-export interface ContextProps {
-    users: User[];
-    deleteUserById: (id: string) => void;
-    addUser: () => void;
+export interface User {
+    _id?:   string;
+    name:  string;
+    email: string;
 }
 
-// Acciones posibles
-export type UserAction =
-    | { type: 'ADD_USER'; payload: User }
-    | { type: 'REMOVE_USER'; payload: { _id: string } }
-    | { type: 'SET_USERS'; payload: UsersListResponse }
+export interface ContextProps {
+    users: User[];
+    deleteUserById: (_id: string) => void;
+    createUser: (user: User) => void;
+    updateUser: (_id:string, user: User) => void;
+}
 
 

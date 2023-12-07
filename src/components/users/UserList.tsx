@@ -2,7 +2,7 @@
 
 import { useContext } from 'react';
 // import { UserContext } from './UserContext';
-import { User, UserAction } from '@/interfaces/user';
+import { User } from '@/interfaces/user';
 // import { UserAction, createUser } from '../types';
 import { useUserContext } from '@/contexts/user/UserContext';
 
@@ -18,15 +18,15 @@ import { Button, ButtonGroup } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-import { getUsers } from '@/api';
 
 
 
 const UserList: React.FC = () => {
-    const { users, deleteUserById, addUser } = useUserContext(); // Utilizamos el hook para acceder al contexto
-    console.log(users);
+    const { users, deleteUserById, createUser, updateUser} = useUserContext(); // Utilizamos el hook para acceder al contexto
+    
     const handleAddUser = () => {
-        addUser();
+        const userNew = {"name": "user 7","email": "email-7-@email.com"}
+        createUser(userNew);
     }
 
     const handleRemoveUser = (_id: string) => {
@@ -34,7 +34,12 @@ const UserList: React.FC = () => {
     }
 
     const handleUpdateUser = (userId: string) => {
-        console.log(`actualizar usuario nº :  ${userId}`);
+    
+        const userChange = {
+            "name": `user 7 - cambiado AA-1 `,
+            "email": `email-7-@email.com`,
+        }
+        updateUser(userId, userChange);
     }
 
     return (
@@ -56,8 +61,8 @@ const UserList: React.FC = () => {
                             <TableCell align="left">{email}</TableCell>
                             <TableCell align="center" sx={{ display: 'flex', justifyContent: 'center' }}>
                                 <ButtonGroup variant="outlined" aria-label="outlined button group">
-                                    <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(_id)}></Button>
-                                    <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(_id)}></Button>
+                                    <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => handleRemoveUser(_id!)}></Button>
+                                    <Button variant="outlined" startIcon={<EditIcon />} onClick={() => handleUpdateUser(_id!)}></Button>
                                     <Button variant="contained" startIcon={<AddCircleIcon />} onClick={() => handleAddUser()}></Button>
                                 </ButtonGroup>
                             </TableCell>
