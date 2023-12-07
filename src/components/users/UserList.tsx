@@ -1,9 +1,5 @@
 // src\components\users\UserList.tsx
 
-import { useContext } from 'react';
-// import { UserContext } from './UserContext';
-import { User } from '@/interfaces/user';
-// import { UserAction, createUser } from '../types';
 import { useUserContext } from '@/contexts/user/UserContext';
 
 import Table from '@mui/material/Table';
