@@ -6,15 +6,16 @@ export interface ExerciseListResponse {
 }
 
 export interface Exercise {
-    _id?:           string;
-    name:           string;
+    _id?: string;
+    name: string;
     typeOfExercise: string;
-    series:         number;
-    repetitions:    number | string;
-    rest:           number;
-    weight:         number;
+    series: number;
+    repetitions: number | string;
+    rest: number;
+    weight: number;
 }
 
 export interface ContextProps {
     exercises: Exercise[];
+    createExercise: (exercise: Exercise) => void;
 }

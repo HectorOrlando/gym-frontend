@@ -1,5 +1,4 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react'
 import { useExerciseContext } from '@/contexts/exercise/ExerciseContex'
 
 import Table from '@mui/material/Table';
@@ -14,28 +13,52 @@ import { Button, ButtonGroup } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
+import AddExerciseForm from './AddExerciseForm';
 
 const ExerciseList: React.FC = () => {
 
-  const { exercises } = useExerciseContext();
+  const { exercises, createExercise } = useExerciseContext();
+  const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
 
   const handleRemoveExercise = (_id: string) => {
     // deleteExerciseById(_id);
-}
+  }
 
-const handleUpdateExercise = (exerciseId: string) => {
+  const handleUpdateExercise = (exerciseId: string) => {
     // const exerciseToUpdate = exercises.find(exercise => exercise._id === exerciseId);
     // if (exerciseToUpdate) {
     //     setExerciseToUpdate(exerciseToUpdate);
     //     setShowUpdateUserForm(true);
     // }
-}
+  }
 
+  const showAddUser = () => {
+    setShowAddExerciseForm(true);
+  }
+
+  const hideAddExerciseForm = () => {
+    setShowAddExerciseForm(false);
+}
 
   return (
     <>
-     
-    
+      <Button
+        variant="outlined"
+        style={{ marginBottom: '15px' }}
+        startIcon={<AddCircleIcon />}
+        onClick={() => showAddUser()}
+      >
+        Add Exercise
+      </Button>
+      {
+        showAddExerciseForm && (
+          <AddExerciseForm
+            addExercise={createExercise}
+            onCancel={hideAddExerciseForm}
+          />
+        )
+      }
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
