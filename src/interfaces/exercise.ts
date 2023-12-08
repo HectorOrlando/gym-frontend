@@ -10,7 +10,7 @@ export interface Exercise {
     name: string;
     typeOfExercise: string;
     series: number;
-    repetitions: number | string;
+    repetitions: number;
     rest: number;
     weight: number;
 }
@@ -18,4 +18,5 @@ export interface Exercise {
 export interface ContextProps {
     exercises: Exercise[];
     createExercise: (exercise: Exercise) => void;
+    updateExerciseById: (id: string, exercise: Exercise) => void;
 }

@@ -15,7 +15,7 @@ export interface ContextProps {
     users: User[];
     deleteUserById: (_id: string) => void;
     createUser: (user: User) => void;
-    updateUser: (_id:string, user: User) => void;
+    updateUserById: (_id:string, user: User) => void;
 }
 
 

@@ -56,9 +56,8 @@ export const validateExercise = (exercise: Exercise): ExerciseValidationResult =
     }
 
     // Validación del campo repetitions
-    const repetitions = parseInt(exercise.repetitions as string);
-    if (isNaN(repetitions) || repetitions <= 0) {
-        errors.repetitions = 'Repetitions must be a positive number';
+    if (isNaN(exercise.repetitions) || exercise.repetitions < 0) {
+        errors.repetitions = 'Rest must be a non-negative number';
         isValid = false;
     }
 

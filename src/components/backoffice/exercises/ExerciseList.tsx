@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { useExerciseContext } from '@/contexts/exercise/ExerciseContex'
+import React, { useState } from 'react';
+import { useExerciseContext } from '@/contexts/exercise/ExerciseContex';
+import AddExerciseForm from './AddExerciseForm';
+import { Exercise } from '@/interfaces/exercise';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,32 +15,41 @@ import { Button, ButtonGroup } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-import AddExerciseForm from './AddExerciseForm';
+import UpdateExerciseForm from './UpdateExerciseForm';
+
 
 const ExerciseList: React.FC = () => {
 
-  const { exercises, createExercise } = useExerciseContext();
+  const { exercises, createExercise, updateExerciseById } = useExerciseContext();
   const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
+  const [showUpdateExerciseForm, setShowUpdateExerciseForm] = useState(false);
+  const [exerciseToUpdate, setExerciseToUpdate] = useState<Exercise | null>(null);
 
   const handleRemoveExercise = (_id: string) => {
     // deleteExerciseById(_id);
   }
 
   const handleUpdateExercise = (exerciseId: string) => {
-    // const exerciseToUpdate = exercises.find(exercise => exercise._id === exerciseId);
-    // if (exerciseToUpdate) {
-    //     setExerciseToUpdate(exerciseToUpdate);
-    //     setShowUpdateUserForm(true);
-    // }
+    const exerciseToUpdate = exercises.find(exercise => exercise._id === exerciseId);
+    if (exerciseToUpdate) {
+      setExerciseToUpdate(exerciseToUpdate);
+      setShowUpdateExerciseForm(true);
+    }
   }
 
-  const showAddUser = () => {
+  const showAddExercise = () => {
     setShowAddExerciseForm(true);
   }
 
   const hideAddExerciseForm = () => {
     setShowAddExerciseForm(false);
-}
+  }
+
+  const hideUpdateExerciseForm = () => {
+    setShowUpdateExerciseForm(false);
+    setExerciseToUpdate(null);
+  }
+
 
   return (
     <>
@@ -46,7 +57,7 @@ const ExerciseList: React.FC = () => {
         variant="outlined"
         style={{ marginBottom: '15px' }}
         startIcon={<AddCircleIcon />}
-        onClick={() => showAddUser()}
+        onClick={() => showAddExercise()}
       >
         Add Exercise
       </Button>
@@ -58,6 +69,13 @@ const ExerciseList: React.FC = () => {
           />
         )
       }
+      {showUpdateExerciseForm && exerciseToUpdate && (
+        <UpdateExerciseForm
+          updateExercise={updateExerciseById}
+          onCancel={hideUpdateExerciseForm}
+          exerciseToUpdate={exerciseToUpdate}
+        />
+      )}
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

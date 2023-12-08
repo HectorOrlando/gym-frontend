@@ -21,7 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 
 const UserList: React.FC = () => {
-    const { users, deleteUserById, createUser, updateUser } = useUserContext();
+    const { users, deleteUserById, createUser, updateUserById } = useUserContext();
     const [showAddUserForm, setShowAddUserForm] = useState(false);
     const [showUpdateUserForm, setShowUpdateUserForm] = useState(false);
     const [userToUpdate, setUserToUpdate] = useState<User | null>(null);
@@ -69,7 +69,7 @@ const UserList: React.FC = () => {
             )}
             {showUpdateUserForm && userToUpdate && (
                 <UpdateUserForm
-                    updateUser={updateUser}
+                    updateUser={updateUserById}
                     onCancel={hideUpdateUserForm}
                     userToUpdate={userToUpdate}
                 />

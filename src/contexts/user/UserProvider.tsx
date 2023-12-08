@@ -10,13 +10,13 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         users: [],
         deleteUserById: () => { throw new Error('deleteUserById called before getUsers') },
         createUser: () => { throw new Error('createUser called before getUsers') },
-        updateUser: () => { throw new Error('updateUser called before getUsers') }
+        updateUserById: () => { throw new Error('updateUser called before getUsers') }
     });
 
     const getUsers = async () => {
         try {
             const { data } = await gymApi.get<UsersListResponse>('/gym/users');
-            setState({ users: data.users, deleteUserById, createUser, updateUser });
+            setState({ users: data.users, deleteUserById, createUser, updateUserById });
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
@@ -45,7 +45,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         }
     }
 
-    const updateUser =async (_id: string, userData: User) => {
+    const updateUserById =async (_id: string, userData: User) => {
 
         try {
             await gymApi.put(`/gym/user/${_id}`, userData);
