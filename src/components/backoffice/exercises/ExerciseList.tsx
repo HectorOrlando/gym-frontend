@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useExerciseContext } from '@/contexts/exercise/ExerciseContex';
 import AddExerciseForm from './AddExerciseForm';
 import { Exercise } from '@/interfaces/exercise';
+import UpdateExerciseForm from './UpdateExerciseForm';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,7 +18,6 @@ import { Button, ButtonGroup } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-import UpdateExerciseForm from './UpdateExerciseForm';
 
 
 const ExerciseList: React.FC = () => {
@@ -26,6 +26,7 @@ const ExerciseList: React.FC = () => {
   const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
   const [showUpdateExerciseForm, setShowUpdateExerciseForm] = useState(false);
   const [exerciseToUpdate, setExerciseToUpdate] = useState<Exercise | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleRemoveExercise = (_id: string) => {
     deleteExerciseById(_id);
@@ -52,6 +53,13 @@ const ExerciseList: React.FC = () => {
     setExerciseToUpdate(null);
   }
 
+  // Lógica para calcular los índices de inicio y fin de la página actual
+  const itemsPerPage = 5;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentExercises = exercises.slice(indexOfFirstItem, indexOfLastItem);
+  // Lógica para cambiar de página
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -94,7 +102,7 @@ const ExerciseList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Array.isArray(exercises) && exercises.map(({ _id, name, typeOfExercise, series, repetitions, rest, weight }) => (
+            {Array.isArray(currentExercises) && currentExercises.map(({ _id, name, typeOfExercise, series, repetitions, rest, weight }) => (
               <TableRow key={_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">{_id}</TableCell>
                 <TableCell align="left">{name}</TableCell>
@@ -113,6 +121,27 @@ const ExerciseList: React.FC = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Paginación  */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '15px' }}>
+          <ButtonGroup>
+            <Button
+              disabled={currentPage === 1}
+              onClick={() => paginate(currentPage - 1)}
+            >
+              Previous
+            </Button>
+
+            <Button
+              disabled={currentPage === Math.ceil(exercises.length / itemsPerPage)}
+              onClick={() => paginate(currentPage + 1)}
+            >
+              Next
+            </Button>
+
+          </ButtonGroup>
+        </div>
+
       </TableContainer>
     </>
   )

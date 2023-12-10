@@ -19,12 +19,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 
-
 const UserList: React.FC = () => {
     const { users, deleteUserById, createUser, updateUserById } = useUserContext();
     const [showAddUserForm, setShowAddUserForm] = useState(false);
     const [showUpdateUserForm, setShowUpdateUserForm] = useState(false);
     const [userToUpdate, setUserToUpdate] = useState<User | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const handleRemoveUser = (_id: string) => {
         deleteUserById(_id);
@@ -50,6 +50,14 @@ const UserList: React.FC = () => {
         setShowUpdateUserForm(false);
         setUserToUpdate(null);
     }
+
+    // Lógica para calcular los índices de inicio y fin de la página actual
+    const itemsPerPage = 5;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentUsers = users.slice(indexOfFirstItem, indexOfLastItem);
+    // Lógica para cambiar de página
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
         <>
@@ -85,7 +93,7 @@ const UserList: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {Array.isArray(users) && users.map(({ _id, name, email }) => (
+                        {Array.isArray(currentUsers) && currentUsers.map(({ _id, name, email }) => (
                             <TableRow key={_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row">{_id}</TableCell>
                                 <TableCell align="left">{name}</TableCell>
@@ -100,6 +108,27 @@ const UserList: React.FC = () => {
                         ))}
                     </TableBody>
                 </Table>
+
+                {/* Paginación  */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '15px' }}>
+                    <ButtonGroup>
+                        <Button
+                            disabled={currentPage === 1}
+                            onClick={() => paginate(currentPage - 1)}
+                        >
+                            Previous
+                        </Button>
+
+                        <Button
+                            disabled={currentPage === Math.ceil(users.length / itemsPerPage)}
+                            onClick={() => paginate(currentPage + 1)}
+                        >
+                            Next
+                        </Button>
+
+                    </ButtonGroup>
+                </div>
+
             </TableContainer>
         </>
     )
