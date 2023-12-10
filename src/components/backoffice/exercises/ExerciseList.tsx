@@ -1,3 +1,5 @@
+// src\components\backoffice\exercises\ExerciseList.tsx
+
 import React, { useState } from 'react';
 import { useExerciseContext } from '@/contexts/exercise/ExerciseContex';
 import AddExerciseForm from './AddExerciseForm';
@@ -20,13 +22,13 @@ import UpdateExerciseForm from './UpdateExerciseForm';
 
 const ExerciseList: React.FC = () => {
 
-  const { exercises, createExercise, updateExerciseById } = useExerciseContext();
+  const { exercises, createExercise, updateExerciseById, deleteExerciseById } = useExerciseContext();
   const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
   const [showUpdateExerciseForm, setShowUpdateExerciseForm] = useState(false);
   const [exerciseToUpdate, setExerciseToUpdate] = useState<Exercise | null>(null);
 
   const handleRemoveExercise = (_id: string) => {
-    // deleteExerciseById(_id);
+    deleteExerciseById(_id);
   }
 
   const handleUpdateExercise = (exerciseId: string) => {

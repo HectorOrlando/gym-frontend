@@ -19,4 +19,5 @@ export interface ContextProps {
     exercises: Exercise[];
     createExercise: (exercise: Exercise) => void;
     updateExerciseById: (id: string, exercise: Exercise) => void;
+    deleteExerciseById: (id: string) => void;
 }
