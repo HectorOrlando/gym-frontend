@@ -10,7 +10,8 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start -p 3009",
-		"lint": "next lint"
+		"lint": "next lint",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@biomejs/biome": "^1.8.3",
@@ -38,5 +39,10 @@
 		"eslint-plugin-react-hooks": "^4.6.2",
 		"husky": "^8.0.0",
 		"typescript": "^5.5.4"
+	},
+	"husky": {
+		"hooks": {
+			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+		}
 	}
 }
